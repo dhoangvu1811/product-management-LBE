@@ -1,0 +1,30 @@
+# Thư mục node_modules chứa các package đã cài đặt
+node_modules/
+
+# Thư mục log chứa các file log
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# File môi trường
+.env
+
+# Các thư mục tạo ra bởi IDE hoặc trình soạn thảo
+.idea/
+.vscode/
+.DS_Store
+
+# File hệ điều hành
+Thumbs.db
+Desktop.ini
+
+# Build output
+dist/
+build/
+out/
+
+# Các thư mục thử nghiệm
+coverage/
+tmp/
