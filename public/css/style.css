@@ -69,6 +69,9 @@
 .product-item .inner-content .inner-title {
     font-style: 20px;
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .product-item .inner-content .inner-price-new {
     font-style: 18px;
