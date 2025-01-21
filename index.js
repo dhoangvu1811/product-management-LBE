@@ -1,9 +1,11 @@
 const express = require('express');
 const database = require('./config/database');
+const systemConfig = require('./config/system');
 require('dotenv').config();
 
 database.connect();
-const route = require('./routes/client/index.route');
+const routeAdmin = require('./routes/admin/index.route');
+const routeClient = require('./routes/client/index.route');
 
 const app = express();
 const port = process.env.PORT;
@@ -14,8 +16,12 @@ app.set('view engine', 'pug');
 //nhúng file tĩnh
 app.use(express.static('public'));
 
+//App locals Variables
+app.locals.prefixAdmin = systemConfig.prefixAdmin;
+
 //route
-route(app);
+routeAdmin(app);
+routeClient(app);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
