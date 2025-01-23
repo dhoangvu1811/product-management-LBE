@@ -2,6 +2,7 @@ const express = require('express');
 var methodOverride = require('method-override');
 const database = require('./config/database');
 const systemConfig = require('./config/system');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 database.connect();
@@ -10,6 +11,8 @@ const routeClient = require('./routes/client/index.route');
 
 const app = express();
 app.use(methodOverride('_method'));
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 const port = process.env.PORT;
 
 app.set('views', './views');
