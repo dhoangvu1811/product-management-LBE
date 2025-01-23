@@ -27,7 +27,6 @@ block main
               th Giá 
               th Trạng thái 
               th Hành động
-
           tbody 
             each item,index in products 
               tr 
@@ -41,14 +40,32 @@ block main
                 )
               td #{item.title}
               td #{item.price}$
-              td 
+              td  
                 if(item.status=="active")
-                  a(href="#" class="badge badge-success") Hoạt động 
+                  a(
+                    href="javascript:;" 
+                    data-id=item.id 
+                    data-status=item.status  
+                    button-changeStatus 
+                    class="badge badge-success"
+                    ) Hoạt động 
                 else
-                  a(href="#" class="badge badge-danger") Dừng hoạt động
-
+                  a(
+                    href="javascript:;" 
+                    data-id=item.id 
+                    data-status=item.status   
+                    button-changeStatus 
+                    class="badge badge-danger"
+                    ) Dừng hoạt động
               td 
                 button(class="btn btn-warning btn-sm") Sửa
                 button(class="btn btn-danger btn-sm ml-1") Xoá
 
   +pagination(pagination) 
+  form(
+  action=""
+  method="post"
+  id="form-change-status"
+  data-path=`${prefixAdmin}/products/change-status`
+  ) 
+  script(src="./js/product.js") 
