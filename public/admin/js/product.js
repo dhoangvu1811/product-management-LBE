@@ -87,3 +87,27 @@ if (formChangeMulti) {
     });
 }
 /* End form change multi */
+
+/* Delete item */
+
+const buttonDeleteItem = document.querySelectorAll('[button-delete]');
+if (buttonDeleteItem.length > 0) {
+    const formDeleteItem = document.querySelector('#form-delete-item');
+    const path = formDeleteItem.getAttribute('data-path');
+
+    buttonDeleteItem.forEach((button) => {
+        button.addEventListener('click', () => {
+            const isConfirm = confirm('Bạn có chắc muốn xoá sản phẩm này?');
+            if (isConfirm) {
+                const idItem = button.getAttribute('data-id');
+
+                const action = path + `/${idItem}?_method=DELETE`;
+
+                formDeleteItem.action = action;
+                formDeleteItem.submit();
+            }
+        });
+    });
+}
+
+/* End delete item */

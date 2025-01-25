@@ -28,7 +28,7 @@ module.exports.index = async (req, res) => {
         req.query,
         {
             currentPage: 1,
-            limitItems: 2,
+            limitItems: 4,
         },
         countProducts
     );
@@ -55,7 +55,7 @@ module.exports.changeStatus = async (req, res) => {
     res.redirect('back');
 };
 
-//[PATCH] /change-status/:status/:id
+//[PATCH] /change-multi/:status/:id
 module.exports.changeMulti = async (req, res) => {
     const type = req.body.type;
     const ids = req.body.ids.split(', ');
@@ -77,5 +77,12 @@ module.exports.changeMulti = async (req, res) => {
             break;
     }
 
+    res.redirect('back');
+};
+
+//[DELETE] /delete/:id
+module.exports.deleteItem = async (req, res) => {
+    const idItem = req.params.id;
+    await Product.deleteOne({ _id: idItem });
     res.redirect('back');
 };
