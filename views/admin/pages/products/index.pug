@@ -3,10 +3,19 @@ include ../../mixins/filter-status.pug
 include ../../mixins/form-search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
+include ../../mixins/alert.pug
 
 block main
   h1 Trang sản phẩm
-
+  //- - if (messages.success)
+  //-   .message.info
+  //-     div(
+  //-       class="alert alert-success"
+  //-       show-alert
+  //-       data-time="5000"
+  //-        ) #{messages.success}
+  +alert()
+       
   .card.mb-3
     .card-header Bộ lọc và tìm kiếm 
     .card-body

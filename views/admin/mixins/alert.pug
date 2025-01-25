@@ -1,0 +1,7 @@
+mixin alert()
+  - if (messages.success || messages.error)
+      div(id="flashMessage" 
+          data-message= messages.success || messages.error
+          data-type= messages.success ? 'success' : 'error'
+          style="display: none;"
+          )

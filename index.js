@@ -3,6 +3,9 @@ var methodOverride = require('method-override');
 const database = require('./config/database');
 const systemConfig = require('./config/system');
 const bodyParser = require('body-parser');
+const flash = require('express-flash');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 require('dotenv').config();
 
 database.connect();
@@ -17,6 +20,12 @@ const port = process.env.PORT;
 
 app.set('views', './views');
 app.set('view engine', 'pug');
+
+/* Flash */
+app.use(cookieParser('DJHSAKJDHSADJHK'));
+app.use(session({ cookie: { maxAge: 60000 } }));
+app.use(flash());
+/* End flash */
 
 //nhúng file tĩnh
 app.use(express.static('public'));

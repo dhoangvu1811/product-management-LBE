@@ -63,3 +63,36 @@ if (buttonPagination.length > 0) {
 }
 
 /* End pagination */
+
+/* Show-alert */
+
+// const showAlert = document.querySelector('[show-alert]');
+// if (showAlert) {
+//     const time = parseInt(showAlert.getAttribute('data-time'));
+
+//     setTimeout(() => {
+//         showAlert.classList.add('alert-hidden');
+//     }, time);
+// }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const message = document
+        .getElementById('flashMessage')
+        ?.getAttribute('data-message');
+    const type = document
+        .getElementById('flashMessage')
+        ?.getAttribute('data-type');
+
+    if (message && type) {
+        // Loại bỏ dấu ngoặc vuông và khoảng trắng dư thừa
+        const cleanMessage = message.replace(/[\[\]"]+/g, '').trim();
+        Swal.fire({
+            title: type === 'success' ? 'Thành công!' : 'Lỗi!',
+            text: cleanMessage,
+            icon: type,
+            confirmButtonText: 'OK',
+        });
+    }
+});
+
+/* End show-alert */
