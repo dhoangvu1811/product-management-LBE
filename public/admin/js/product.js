@@ -59,7 +59,7 @@ if (checkboxMulti) {
 }
 /* End table checkbox multi */
 
-/* Form change multi */
+/* Form change multi & delete all */
 const formChangeMulti = document.querySelector('[form-change-multi]');
 if (formChangeMulti) {
     formChangeMulti.addEventListener('submit', (e) => {
@@ -69,6 +69,18 @@ if (formChangeMulti) {
         const inputChecked = checkboxMulti.querySelectorAll(
             "input[name='id']:checked"
         );
+
+        const typeChange = e.target.elements.type.value;
+
+        if (typeChange == 'delete-all') {
+            const isConfirm = confirm(
+                'Bạn có chắc muốn xoá những sản phẩm này?'
+            );
+
+            if (!isConfirm) {
+                return;
+            }
+        }
 
         if (inputChecked.length > 0) {
             let ids = [];
@@ -86,7 +98,7 @@ if (formChangeMulti) {
         }
     });
 }
-/* End form change multi */
+/* End form change multi & delete all */
 
 /* Delete item */
 
