@@ -2,6 +2,7 @@ const Product = require('../../model/product.model');
 const filterStatusHelper = require('../../helpers/filterStatus');
 const searchHelper = require('../../helpers/search');
 const paginationHelper = require('../../helpers/pagination');
+const systemConfig = require('../../config/system');
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
@@ -118,4 +119,29 @@ module.exports.deleteItem = async (req, res) => {
     );
     req.flash('success', 'Đã xoá sản phẩm thành công');
     res.redirect('back');
+};
+
+//[GET] /create
+module.exports.createItem = (req, res) => {
+    res.render('admin/pages/products/create', {
+        titlePage: 'Thêm mới sản phẩm',
+    });
+};
+//[POST] /create
+module.exports.createItemPost = async (req, res) => {
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+
+    if (req.body.pos == '') {
+        const count = await Product.countDocuments();
+        req.body.pos = count + 1;
+    } else {
+        req.body.pos = parseInt(req.body.pos);
+    }
+    const product = new Product(req.body);
+    await product.save();
+
+    req.flash('success', 'Tạo sản phẩm mới thành công');
+    res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
