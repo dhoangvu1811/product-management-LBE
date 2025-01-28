@@ -82,12 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = document
         .getElementById('flashMessage')
         ?.getAttribute('data-type');
-
     if (message && type) {
         // Loại bỏ dấu ngoặc vuông và khoảng trắng dư thừa
         const cleanMessage = message.replace(/[\[\]"]+/g, '').trim();
         Swal.fire({
-            title: type === 'success' ? 'Thành công!' : 'Lỗi!',
+            title:
+                type === 'success'
+                    ? 'Thành công!'
+                    : type == 'warning'
+                    ? 'Cảnh báo'
+                    : 'Lỗi!',
             text: cleanMessage,
             icon: type,
             confirmButtonText: 'OK',

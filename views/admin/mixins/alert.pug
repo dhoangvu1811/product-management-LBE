@@ -1,7 +1,7 @@
 mixin alert()
-  - if (messages.success || messages.error)
+  - if (messages.success || messages.error|| messages.warning)
       div(id="flashMessage" 
-          data-message= messages.success || messages.error
-          data-type= messages.success ? 'success' : 'error'
+          data-message= messages.success || messages.error||messages.warning
+          data-type= messages.success ? 'success' : (messages.warning?"warning":"error")
           style="display: none;"
           )

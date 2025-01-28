@@ -1,8 +1,9 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
 
 block main 
   h1(class="mb-4") Thêm mới sản phẩm
-
+  +alert()
   form(
     action=`${prefixAdmin}/products/create` 
     id="form-create-product" 
@@ -16,7 +17,7 @@ block main
         class="form-control"
         id="title"
         name="title"
-        required
+        
       ) 
     div(class="form-group")
       label(for="desc") Mô tả
