@@ -150,3 +150,41 @@ module.exports.createItemPost = async (req, res) => {
     req.flash('success', 'Tạo sản phẩm mới thành công');
     res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
+
+//[GET] /edit/:id
+module.exports.editItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const product = await Product.findOne({ _id: id, deleted: false });
+
+        res.render('admin/pages/products/edit', {
+            titlePage: 'Chỉnh sửa sản phẩm',
+            product: product,
+        });
+    } catch (error) {
+        req.flash('error', 'id sản phẩm không tồn tại!');
+        res.redirect(`${systemConfig.prefixAdmin}/products`);
+    }
+};
+//[PATCH] /edit/:id
+module.exports.editItemPatch = async (req, res) => {
+    const id = req.params.id;
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+    req.body.pos = parseInt(req.body.pos);
+
+    if (req.file) {
+        req.body.thumbnail = `/uploads/${req.file.filename}`;
+    }
+
+    try {
+        await Product.updateOne({ _id: id }, req.body);
+        req.flash('success', 'Chỉnh sửa sản phẩm thành công');
+    } catch (error) {
+        req.flash('error', 'Chỉnh sửa sản phẩm thất bại!');
+    }
+
+    res.redirect('back');
+};
