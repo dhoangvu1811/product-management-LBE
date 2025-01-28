@@ -96,3 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* End show-alert */
+
+/* Upload image */
+
+const uploadImage = document.querySelector('[upload-image]');
+if (uploadImage) {
+    const uploadImageInput = document.querySelector('[upload-image-input]');
+    const uploadImagePreview = document.querySelector('[upload-image-preview]');
+
+    uploadImageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            //tạo đg dẫn tạm thời cho ảnh mà không cần upload lên server
+            uploadImagePreview.src = URL.createObjectURL(file);
+        }
+    });
+}
+/* End upload image */
