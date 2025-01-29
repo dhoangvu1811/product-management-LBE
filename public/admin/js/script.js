@@ -101,12 +101,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* End show-alert */
 
-/* Upload image */
+/* Upload image & delete preview*/
 
 const uploadImage = document.querySelector('[upload-image]');
 if (uploadImage) {
+    const btnDeletePreview = document.querySelector(
+        '[btn-delete-imagePreview]'
+    );
     const uploadImageInput = document.querySelector('[upload-image-input]');
     const uploadImagePreview = document.querySelector('[upload-image-preview]');
+
+    btnDeletePreview.style.display = 'none';
 
     uploadImageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -114,7 +119,15 @@ if (uploadImage) {
         if (file) {
             //tạo đg dẫn tạm thời cho ảnh mà không cần upload lên server
             uploadImagePreview.src = URL.createObjectURL(file);
+
+            btnDeletePreview.style.display = 'inline-block';
         }
     });
+
+    btnDeletePreview.addEventListener('click', () => {
+        uploadImageInput.value = '';
+        uploadImagePreview.src = '';
+        btnDeletePreview.style.display = 'none';
+    });
 }
-/* End upload image */
+/* End upload image & delete preview*/
