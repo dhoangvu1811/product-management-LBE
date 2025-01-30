@@ -252,3 +252,20 @@ module.exports.trashDeletePermanentlyItem = async (req, res) => {
     }
     res.redirect('back');
 };
+
+//[GET] /edit/:id
+module.exports.detailItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const product = await Product.findOne({ _id: id, deleted: false });
+
+        res.render('admin/pages/products/detail', {
+            titlePage: product.title,
+            product: product,
+        });
+    } catch (error) {
+        req.flash('error', 'id sản phẩm không tồn tại!');
+        res.redirect(`${systemConfig.prefixAdmin}/products`);
+    }
+};
