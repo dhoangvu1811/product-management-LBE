@@ -1,0 +1,30 @@
+extends ../../layouts/default.pug
+
+block main 
+  .container.my-3
+    .row 
+      .col-12 
+        if(productDetail.title)
+          div(class="mb-4") #{productDetail.title}
+
+        if(productDetail.price)
+          div(class="mb-4") Giá: #{productDetail.price}
+
+        if(productDetail.discountPercentage)
+          div(class="mb-4") Giảm giá: #{productDetail.discountPercentage}
+
+        if(productDetail.stock)
+          div(class="mb-4") Còn lại: #{productDetail.stock}
+
+        if(productDetail.thumbnail)
+          div(class="mb-4")
+            img(
+              src=productDetail.thumbnail
+              style="width:100px"
+            )
+
+        if(productDetail.pos)
+          div(class="mb-4") Vị trí: <b>#{productDetail.pos}</b>
+
+        if(productDetail.description)
+          div(class="mb-4") #{productDetail.description}
