@@ -25,4 +25,11 @@ router.patch(
     productController.editItemPatch
 );
 
+router.get('/trash', productController.trashItem);
+router.patch('/trash/restore/:id', productController.trashRestoreItem);
+router.delete(
+    '/trash/delete-permanently/:id',
+    productController.trashDeletePermanentlyItem
+);
+
 module.exports = router;

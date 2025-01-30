@@ -1,4 +1,4 @@
-mixin form-change-multi(path)
+mixin form-change-multi(path,actions)
   form(
     action=path
     method="post"
@@ -8,10 +8,8 @@ mixin form-change-multi(path)
       .form-group
         select(name="type" class="form-control")
           option(disabled selected) --Chọn hành động--  
-          option(value="active") Hoạt động  
-          option(value="inactive") Dừng hoạt động  
-          option(value="change-position") Thay đổi vị trí   
-          option(value="delete-all") Xoá tất cả sản phẩm  
+          each action in actions 
+            option(value=action.value) #{action.text}  
       .form-group
         input(
           type="hidden"

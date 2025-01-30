@@ -59,10 +59,10 @@ if (checkboxMulti) {
 }
 /* End table checkbox multi */
 
-/* Form change multi & delete all */
+/* Form change multi & delete all & change position*/
 const formChangeMulti = document.querySelector('[form-change-multi]');
 if (formChangeMulti) {
-    formChangeMulti.addEventListener('submit', (e) => {
+    formChangeMulti.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const checkboxMulti = document.querySelector('[table-checkbox-multi]');
@@ -73,11 +73,32 @@ if (formChangeMulti) {
         const typeChange = e.target.elements.type.value;
 
         if (typeChange == 'delete-all') {
-            const isConfirm = confirm(
-                'Bạn có chắc muốn xoá những sản phẩm này?'
-            );
+            const result = await Swal.fire({
+                title: 'Bạn có chắc không?',
+                text: 'Xoá những sản phẩm này',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xoá',
+            });
 
-            if (!isConfirm) {
+            if (!result.isConfirmed) {
+                return;
+            }
+        }
+        if (typeChange == 'delete-permanently') {
+            const result = await Swal.fire({
+                title: 'Bạn có chắc không?',
+                text: 'Xoá vĩnh viễn những sản phẩm này',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xoá vĩnh viễn',
+            });
+
+            if (!result.isConfirmed) {
                 return;
             }
         }
@@ -117,17 +138,70 @@ if (buttonDeleteItem.length > 0) {
 
     buttonDeleteItem.forEach((button) => {
         button.addEventListener('click', () => {
-            const isConfirm = confirm('Bạn có chắc muốn xoá sản phẩm này?');
-            if (isConfirm) {
-                const idItem = button.getAttribute('data-id');
+            Swal.fire({
+                title: 'Bạn có chắc không?',
+                text: 'Xoá sản phẩm',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xoá',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const idItem = button.getAttribute('data-id');
 
-                const action = path + `/${idItem}?_method=DELETE`;
+                    const action = path + `/${idItem}?_method=DELETE`;
 
-                formDeleteItem.action = action;
-                formDeleteItem.submit();
-            }
+                    formDeleteItem.action = action;
+                    formDeleteItem.submit();
+                }
+            });
         });
     });
 }
 
 /* End delete item */
+
+/* Restore item */
+
+const buttonRestore = document.querySelectorAll('[button-restore]');
+
+if (buttonRestore.length > 0) {
+    const formRestore = document.querySelector('#form-restore-item');
+    const path = formRestore.getAttribute('data-path');
+
+    buttonRestore.forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            const action = path + `/${id}?_method=PATCH`;
+            formRestore.action = action;
+            formRestore.submit();
+        });
+    });
+}
+
+/* End restore item */
+
+/* Delete-permanently item */
+
+const buttonDeletePermanently = document.querySelectorAll(
+    '[ button-delete-permanently]'
+);
+
+if (buttonDeletePermanently.length > 0) {
+    const formDeletePermanently = document.querySelector(
+        '#form-delete-permanently-item'
+    );
+    const path = formDeletePermanently.getAttribute('data-path');
+
+    buttonDeletePermanently.forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            const action = path + `/${id}?_method=DELETE`;
+            formDeletePermanently.action = action;
+            formDeletePermanently.submit();
+        });
+    });
+}
+
+/* End delete-permanently item */

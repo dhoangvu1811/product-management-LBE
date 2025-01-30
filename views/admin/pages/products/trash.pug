@@ -1,19 +1,11 @@
 extends ../../layouts/default.pug
 include ../../mixins/filter-status.pug
-include ../../mixins/form-search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 
 block main
-  h1 Trang sản phẩm
-  //- - if (messages.success)
-  //-   .message.info
-  //-     div(
-  //-       class="alert alert-success"
-  //-       show-alert
-  //-       data-time="5000"
-  //-        ) #{messages.success}
+  h1 Thùng rác
   +alert()
        
   .card.mb-3
@@ -22,24 +14,16 @@ block main
       .row
         .col-6
           +filter-status(filterStatus)
-        .col-6 
-          +form-search(keyword)
 
   .card.mb-3
-    .card-header Danh sách sản phẩm
+    .card-header Thùng rác
       .card-body 
         .row 
           .col-8
             +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`,[
-              { value: "active", text: "Hoạt động" },
-              { value: "inactive", text: "Dừng hoạt động" },
-              { value: "change-position", text: "Thay đổi vị trí" },
-              { value: "delete-all", text: "Xoá tất cả sản phẩm" }
+              { value: "restore", text: "Khôi phục" },
+              { value: "delete-permanently", text: "Xoá vĩnh viễn" }
             ])
-          .col-2 
-            a(href=`${prefixAdmin}/products/create` class="btn btn-outline-success") + Thêm mới
-          .col-2 
-            a(href=`${prefixAdmin}/products/trash` class="btn btn-outline-success") Thùng rác
 
         table(
           class="table table-hover table-sm"
@@ -82,47 +66,41 @@ block main
                     style="width:60px" 
                     min="1" 
                     name="position"
+                    readonly
                     )
                 td  
                   if(item.status=="active")
-                    a(
-                      href="javascript:;" 
-                      data-id=item.id 
-                      data-status=item.status  
-                      button-changeStatus 
+                    span(
                       class="badge badge-success"
                       ) Hoạt động 
                   else
-                    a(
-                      href="javascript:;" 
-                      data-id=item.id 
-                      data-status=item.status   
-                      button-changeStatus 
+                    span(
                       class="badge badge-danger"
                       ) Dừng hoạt động
                 td 
-                  a(
+                  button(
                     class="btn btn-warning btn-sm"
-                    href=`${prefixAdmin}/products/edit/${item.id}`
-                    ) Sửa
+                    button-restore
+                    data-id=item.id
+                    ) Khôi phục
                   button(
                     class="btn btn-danger btn-sm ml-1"
-                    button-delete
+                    button-delete-permanently
                     data-id=item.id
-                    ) Xoá
+                    ) Xoá vĩnh viễn
 
   +pagination(pagination) 
-  form(
-  action=""
-  method="post"
-  id="form-change-status"
-  data-path=`${prefixAdmin}/products/change-status`
-  ) 
 
   form(
   action=""
   method="post"
-  id="form-delete-item"
-  data-path=`${prefixAdmin}/products/delete`
+  id="form-delete-permanently-item"
+  data-path=`${prefixAdmin}/products/trash/delete-permanently`
   ) 
-  script(src="./js/product.js") 
+  form(
+  action=""
+  method="post"
+  id="form-restore-item"
+  data-path=`${prefixAdmin}/products/trash/restore`
+  ) 
+  script(src="/admin/js/product.js") 

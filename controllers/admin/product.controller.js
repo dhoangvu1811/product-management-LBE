@@ -58,7 +58,7 @@ module.exports.changeStatus = async (req, res) => {
     res.redirect('back');
 };
 
-//[PATCH] /change-multi/:status/:id
+//[PATCH] /change-multi/:status/:id (change position, delete all)
 module.exports.changeMulti = async (req, res) => {
     const type = req.body.type;
     const ids = req.body.ids.split(', ');
@@ -101,6 +101,14 @@ module.exports.changeMulti = async (req, res) => {
                 'success',
                 `Thay đổi vị trí ${ids.length} sản phẩm thành công`
             );
+            break;
+        case 'restore':
+            await Product.updateMany({ _id: { $in: ids } }, { deleted: false });
+            req.flash('success', `Khôi phục ${ids.length} sản phẩm thành công`);
+            break;
+        case 'delete-permanently':
+            await Product.deleteMany({ _id: { $in: ids } });
+            req.flash('success', `Xoá ${ids.length} sản phẩm thành công`);
             break;
         default:
             break;
@@ -186,5 +194,61 @@ module.exports.editItemPatch = async (req, res) => {
         req.flash('error', 'Chỉnh sửa sản phẩm thất bại!');
     }
 
+    res.redirect('back');
+};
+
+module.exports.trashItem = async (req, res) => {
+    //bộ lọc theo status
+    const filterStatus = filterStatusHelper(req.query);
+
+    let find = {
+        deleted: true,
+    };
+
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+
+    const countProducts = await Product.countDocuments(find);
+    let objectPagination = paginationHelper(
+        req.query,
+        {
+            currentPage: 1,
+            limitItems: 4,
+        },
+        countProducts
+    );
+
+    const products = await Product.find(find)
+        .sort({ pos: 'desc' })
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip);
+    res.render('admin/pages/products/trash', {
+        titlePage: 'Thùng rác',
+        products: products,
+        filterStatus: filterStatus,
+        pagination: objectPagination,
+    });
+};
+
+module.exports.trashRestoreItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Product.updateOne({ _id: id }, { deleted: false });
+        req.flash('success', 'Khôi phục sản phẩm thành công');
+    } catch (error) {
+        req.flash('error', 'Khôi phục sản phẩm thất bại');
+    }
+    res.redirect('back');
+};
+
+module.exports.trashDeletePermanentlyItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Product.deleteOne({ _id: id });
+        req.flash('success', 'Xoá sản phẩm thành công');
+    } catch (error) {
+        req.flash('error', 'Xoá sản phẩm thất bại');
+    }
     res.redirect('back');
 };
