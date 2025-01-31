@@ -22,8 +22,15 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 
 /* Flash */
-app.use(cookieParser('DJHSAKJDHSADJHK'));
-app.use(session({ cookie: { maxAge: 60000 } }));
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+    session({
+        secret: process.env.COOKIE_SECRET,
+        resave: false, // Không lưu lại session nếu không thay đổi
+        saveUninitialized: false, // Chỉ lưu session khi có dữ liệu
+        cookie: { maxAge: 60000, secure: false }, // Đặt `secure: true` nếu chạy trên HTTPS
+    })
+);
 app.use(flash());
 /* End flash */
 
