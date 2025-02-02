@@ -1,30 +1,20 @@
 extends ../../layouts/default.pug
-include ../../mixins/filter-status.pug
-include ../../mixins/pagination.pug
-include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 
-block main
-  h1 Thùng rác
+
+block main 
+  h1 Trang danh mục sản phẩm
   +alert()
-       
-  .card.mb-3
-    .card-header Bộ lọc và tìm kiếm 
-    .card-body
-      .row
-        .col-6
-          +filter-status(filterStatus)
 
   .card.mb-3
-    .card-header Thùng rác
+    .card-header Danh sách sản phẩm
       .card-body 
-        .row 
+        .row
           .col-8
-            +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`,[
-              { value: "restore", text: "Khôi phục" },
-              { value: "delete-permanently", text: "Xoá vĩnh viễn" }
-            ])
-
+            
+          .col-4
+            a(href=`${prefixAdmin}/products-category/create` class="btn btn-outline-success") + Thêm mới
+        
         table(
           class="table table-hover table-sm"
           table-checkbox-multi
@@ -36,12 +26,11 @@ block main
               th STT 
               th Hình ảnh 
               th Tiêu đề 
-              th Giá 
               th Vị trí 
               th Trạng thái 
               th Hành động
           tbody 
-            each item,index in products 
+            each item,index in records 
               tr 
                 td 
                   input(
@@ -58,7 +47,6 @@ block main
                   height="auto"
                   )
                 td #{item.title}
-                td #{item.price}$
                 td 
                   input(
                     type="number" 
@@ -66,41 +54,37 @@ block main
                     style="width:60px" 
                     min="1" 
                     name="position"
-                    readonly
                     )
                 td  
                   if(item.status=="active")
-                    span(
+                    a(
+                      href="javascript:;" 
+                      data-id=item.id 
+                      data-status=item.status  
+                      button-changeStatus 
                       class="badge badge-success"
                       ) Hoạt động 
                   else
-                    span(
+                    a(
+                      href="javascript:;" 
+                      data-id=item.id 
+                      data-status=item.status   
+                      button-changeStatus 
                       class="badge badge-danger"
                       ) Dừng hoạt động
                 td 
-                  button(
+                  a(
+                    class="btn btn-secondary btn-sm"
+                  href=`${prefixAdmin}/products-category/detail/${item.id}`
+                    ) Chi tiết
+                  a(
                     class="btn btn-warning btn-sm"
-                    button-restore
-                    data-id=item.id
-                    ) Khôi phục
+                    href=`${prefixAdmin}/products-category/edit/${item.id}`
+                    ) Sửa
                   button(
                     class="btn btn-danger btn-sm ml-1"
-                    button-delete-permanently
+                    button-delete
                     data-id=item.id
-                    ) Xoá vĩnh viễn
+                    ) Xoá
+         
 
-  +pagination(pagination) 
-
-  form(
-  action=""
-  method="post"
-  id="form-delete-permanently-item"
-  data-path=`${prefixAdmin}/products/trash/delete-permanently`
-  ) 
-  form(
-  action=""
-  method="post"
-  id="form-restore-item"
-  data-path=`${prefixAdmin}/products/trash/restore`
-  ) 
-  script(src="/admin/js/product.js") 

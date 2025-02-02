@@ -36,4 +36,5 @@ router.delete(
     productController.trashDeletePermanentlyItem
 );
 router.get('/detail/:id', productController.detailItem);
+
 module.exports = router;

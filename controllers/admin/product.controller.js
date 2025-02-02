@@ -40,7 +40,7 @@ module.exports.index = async (req, res) => {
     if (req.query.sortKey && req.query.sortValue) {
         sort[req.query.sortKey] = req.query.sortValue;
     } else {
-        sort.pos = 'desc';
+        sort.position = 'desc';
     }
 
     const products = await Product.find(find)
@@ -104,7 +104,7 @@ module.exports.changeMulti = async (req, res) => {
             for (const item of ids) {
                 let [id, position] = item.split('-');
                 position = parseInt(position);
-                await Product.updateOne({ _id: id }, { pos: position });
+                await Product.updateOne({ _id: id }, { position: position });
             }
             req.flash(
                 'success',
@@ -150,11 +150,11 @@ module.exports.createItemPost = async (req, res) => {
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
 
-    if (req.body.pos == '') {
+    if (req.body.position == '') {
         const count = await Product.countDocuments();
-        req.body.pos = count + 1;
+        req.body.position = count + 1;
     } else {
-        req.body.pos = parseInt(req.body.pos);
+        req.body.position = parseInt(req.body.position);
     }
 
     // if (req.file) {
@@ -190,7 +190,7 @@ module.exports.editItemPatch = async (req, res) => {
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
     req.body.stock = parseInt(req.body.stock);
-    req.body.pos = parseInt(req.body.pos);
+    req.body.position = parseInt(req.body.position);
 
     if (req.file) {
         req.body.thumbnail = `/uploads/${req.file.filename}`;
@@ -229,7 +229,7 @@ module.exports.trashItem = async (req, res) => {
     );
 
     const products = await Product.find(find)
-        .sort({ pos: 'desc' })
+        .sort({ position: 'desc' })
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip);
     res.render('admin/pages/products/trash', {
