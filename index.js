@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 var methodOverride = require('method-override');
 const database = require('./config/database');
 const systemConfig = require('./config/system');
@@ -33,6 +34,13 @@ app.use(
 );
 app.use(flash());
 /* End flash */
+
+/* TinyMCE */
+app.use(
+    '/tinymce',
+    express.static(path.join(__dirname, 'node_modules', 'tinymce'))
+);
+/* End tinyMCE */
 
 //nhúng file tĩnh
 app.use(express.static(`${__dirname}/public`));
