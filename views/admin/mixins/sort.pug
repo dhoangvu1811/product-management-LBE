@@ -1,4 +1,4 @@
-mixin sort()
+mixin sort(actions)
   div(sort)
     select(
       class="form-control"
@@ -6,12 +6,8 @@ mixin sort()
       sort-select
     ) 
       option(disabled selected) --Chọn tiêu chí-- 
-      option(value="position-desc") Vị trí giảm dần 
-      option(value="position-asc") Vị trí tăng dần 
-      option(value="price-desc") Giá giảm dần 
-      option(value="price-asc") Giá tăng dần 
-      option(value="title-asc") Tiêu đề A - Z 
-      option(value="title-desc") Tiêu đề Z - A
+      each item in actions
+        option(value=item.value) #{item.text} 
     
     button(
       class="btn btn-danger mt-2"

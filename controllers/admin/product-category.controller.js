@@ -23,7 +23,16 @@ module.exports.index = async (req, res) => {
         find.status = req.query.status;
     }
 
-    const records = await ProductCategory.find(find);
+    //sort
+    let sort = {};
+
+    if (req.query.sortKey && req.query.sortValue) {
+        sort[req.query.sortKey] = req.query.sortValue;
+    } else {
+        sort.position = 'desc';
+    }
+
+    const records = await ProductCategory.find(find).sort(sort);
 
     res.render('admin/pages/products-category/index', {
         titlePage: 'Trang danh mục sản phẩm',
