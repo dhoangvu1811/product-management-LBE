@@ -123,7 +123,11 @@ if (formChangeMulti) {
 
             formChangeMulti.submit();
         } else {
-            alert('Vui lòng chọn ít nhất 1 bản ghi!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Vui lòng chọn ít nhất 1 bản ghi!',
+            });
         }
     });
 }

@@ -35,7 +35,7 @@ module.exports.index = async (req, res) => {
     const records = await ProductCategory.find(find).sort(sort);
 
     res.render('admin/pages/products-category/index', {
-        titlePage: 'Trang danh mục sản phẩm',
+        titlePage: 'Trang danh mục danh mục',
         records: records,
         filterStatus: filterStatus,
         keyword: objectSearch.keyword,
@@ -45,7 +45,7 @@ module.exports.index = async (req, res) => {
 // [GET] /admin/products-category/create
 module.exports.create = async (req, res) => {
     res.render('admin/pages/products-category/create', {
-        titlePage: 'Thêm danh mục sản phẩm',
+        titlePage: 'Thêm danh mục danh mục',
     });
 };
 
@@ -73,5 +73,70 @@ module.exports.changeStatus = async (req, res) => {
     await ProductCategory.updateOne({ _id: id }, { status: status });
 
     req.flash('success', 'Cập nhật trạng thái danh mục thành công!');
+    res.redirect('back');
+};
+
+//[PATCH] /admin/products-category/change-multi/:status/:id (change position, delete all)
+module.exports.changeMulti = async (req, res) => {
+    const type = req.body.type;
+    const ids = req.body.ids.split(', ');
+
+    switch (type) {
+        case 'active':
+            await ProductCategory.updateMany(
+                { _id: { $in: ids } },
+                { status: 'active' }
+            );
+            req.flash(
+                'success',
+                `Cập nhật trạng thái ${ids.length} danh mục thành công`
+            );
+            break;
+        case 'inactive':
+            await ProductCategory.updateMany(
+                { _id: { $in: ids } },
+                { status: 'inactive' }
+            );
+            req.flash(
+                'success',
+                `Cập nhật trạng thái ${ids.length} danh mục thành công`
+            );
+            break;
+        case 'delete-all':
+            await ProductCategory.updateMany(
+                { _id: { $in: ids } },
+                { deleted: true, deletedAt: new Date() }
+            );
+            req.flash('success', `Xoá ${ids.length} danh mục thành công`);
+            break;
+        case 'change-position':
+            for (const item of ids) {
+                let [id, position] = item.split('-');
+                position = parseInt(position);
+                await ProductCategory.updateOne(
+                    { _id: id },
+                    { position: position }
+                );
+            }
+            req.flash(
+                'success',
+                `Thay đổi vị trí ${ids.length} danh mục thành công`
+            );
+            break;
+        case 'restore':
+            await ProductCategory.updateMany(
+                { _id: { $in: ids } },
+                { deleted: false }
+            );
+            req.flash('success', `Khôi phục ${ids.length} danh mục thành công`);
+            break;
+        case 'delete-permanently':
+            await ProductCategory.deleteMany({ _id: { $in: ids } });
+            req.flash('success', `Xoá ${ids.length} danh mục thành công`);
+            break;
+        default:
+            break;
+    }
+
     res.redirect('back');
 };

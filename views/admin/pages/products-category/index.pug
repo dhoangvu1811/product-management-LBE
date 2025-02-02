@@ -12,7 +12,7 @@ block main
   +alert()
 
   .card.mb-3
-    .card-header Bộ lọc và tìm kiếm 
+    .card-header Bộ lọc và tìm kiếm danh mục
     .card-body
       .row
         .col-6
@@ -21,7 +21,7 @@ block main
           +form-search(keyword)
 
   .card.mb-3 
-    .card-header Sắp xếp
+    .card-header Sắp xếp danh mục
     .card-body
       .row
         .col-4
@@ -34,13 +34,20 @@ block main
 
 
   .card.mb-3
-    .card-header Danh sách sản phẩm
+    .card-header Danh sách danh mục
       .card-body 
         .row
           .col-8
-            
-          .col-4
+             +form-change-multi(`${prefixAdmin}/products-category/change-multi?_method=PATCH`,[
+              { value: "active", text: "Hoạt động" },
+              { value: "inactive", text: "Dừng hoạt động" },
+              { value: "change-position", text: "Thay đổi vị trí" },
+              { value: "delete-all", text: "Xoá tất cả sản phẩm" }
+            ])
+          .col-2
             a(href=`${prefixAdmin}/products-category/create` class="btn btn-outline-success") + Thêm mới
+          .col-2 
+            a(href=`${prefixAdmin}/products-category/trash` class="btn btn-outline-success") Thùng rác
         
         table(
           class="table table-hover table-sm"

@@ -19,4 +19,6 @@ router.patch(
     '/change-status/:status/:id',
     productCategoryController.changeStatus
 );
+router.patch('/change-multi', productCategoryController.changeMulti);
+
 module.exports = router;
