@@ -140,3 +140,62 @@ module.exports.changeMulti = async (req, res) => {
 
     res.redirect('back');
 };
+
+//[GET] /admin/products-category/trash
+module.exports.trashItem = async (req, res) => {
+    //bộ lọc theo status
+    const filterStatus = filterStatusHelper(req.query);
+
+    let find = {
+        deleted: true,
+    };
+
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+
+    const countProducts = await ProductCategory.countDocuments(find);
+    let objectPagination = paginationHelper(
+        req.query,
+        {
+            currentPage: 1,
+            limitItems: 2,
+        },
+        countProducts
+    );
+
+    const records = await ProductCategory.find(find)
+        .sort({ position: 'desc' })
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip);
+    res.render('admin/pages/products-category/trash', {
+        titlePage: 'Thùng rác',
+        records: records,
+        filterStatus: filterStatus,
+        pagination: objectPagination,
+    });
+};
+
+//[PATCH] /admin/products-category/trash/restore/:id
+module.exports.trashRestoreItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await ProductCategory.updateOne({ _id: id }, { deleted: false });
+        req.flash('success', 'Khôi phục danh mục thành công');
+    } catch (error) {
+        req.flash('error', 'Khôi phục danh mục thất bại');
+    }
+    res.redirect('back');
+};
+
+//[DELETE] /admin/products-category/trash/delete-permanently/:id
+module.exports.trashDeletePermanentlyItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await ProductCategory.deleteOne({ _id: id });
+        req.flash('success', 'Xoá danh mục thành công');
+    } catch (error) {
+        req.flash('error', 'Xoá danh mục thất bại');
+    }
+    res.redirect('back');
+};

@@ -21,4 +21,11 @@ router.patch(
 );
 router.patch('/change-multi', productCategoryController.changeMulti);
 
+router.get('/trash', productCategoryController.trashItem);
+router.patch('/trash/restore/:id', productCategoryController.trashRestoreItem);
+router.delete(
+    '/trash/delete-permanently/:id',
+    productCategoryController.trashDeletePermanentlyItem
+);
+
 module.exports = router;

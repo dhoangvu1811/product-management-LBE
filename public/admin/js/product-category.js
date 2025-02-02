@@ -132,3 +132,80 @@ if (formChangeMulti) {
     });
 }
 /* End form change multi & delete all */
+
+/* Delete item */
+
+const buttonDeleteItem = document.querySelectorAll('[button-delete]');
+if (buttonDeleteItem.length > 0) {
+    const formDeleteItem = document.querySelector('#form-delete-item');
+    const path = formDeleteItem.getAttribute('data-path');
+
+    buttonDeleteItem.forEach((button) => {
+        button.addEventListener('click', () => {
+            Swal.fire({
+                title: 'Bạn có chắc không?',
+                text: 'Xoá sản phẩm',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xoá',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const idItem = button.getAttribute('data-id');
+
+                    const action = path + `/${idItem}?_method=DELETE`;
+
+                    formDeleteItem.action = action;
+                    formDeleteItem.submit();
+                }
+            });
+        });
+    });
+}
+
+/* End delete item */
+
+/* Restore item */
+
+const buttonRestore = document.querySelectorAll('[button-restore]');
+
+if (buttonRestore.length > 0) {
+    const formRestore = document.querySelector('#form-restore-item');
+    const path = formRestore.getAttribute('data-path');
+
+    buttonRestore.forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            const action = path + `/${id}?_method=PATCH`;
+            formRestore.action = action;
+            formRestore.submit();
+        });
+    });
+}
+
+/* End restore item */
+
+/* Delete-permanently item */
+
+const buttonDeletePermanently = document.querySelectorAll(
+    '[ button-delete-permanently]'
+);
+
+if (buttonDeletePermanently.length > 0) {
+    const formDeletePermanently = document.querySelector(
+        '#form-delete-permanently-item'
+    );
+    const path = formDeletePermanently.getAttribute('data-path');
+
+    buttonDeletePermanently.forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            const action = path + `/${id}?_method=DELETE`;
+            formDeletePermanently.action = action;
+            formDeletePermanently.submit();
+        });
+    });
+}
+
+/* End delete-permanently item */

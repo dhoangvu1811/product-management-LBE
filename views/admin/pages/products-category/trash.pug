@@ -5,22 +5,22 @@ include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 
 block main
-  h1 Thùng rác sản phẩm
+  h1 Thùng rác danh mục
   +alert()
        
   .card.mb-3
-    .card-header Bộ lọc và tìm kiếm sản phẩm
+    .card-header Bộ lọc và tìm kiếm danh mục
     .card-body
       .row
         .col-6
           +filter-status(filterStatus)
 
   .card.mb-3
-    .card-header Thùng rác sản phẩm
+    .card-header Thùng rác danh mục
       .card-body 
         .row 
           .col-8
-            +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`,[
+            +form-change-multi(`${prefixAdmin}/products-category/change-multi?_method=PATCH`,[
               { value: "restore", text: "Khôi phục" },
               { value: "delete-permanently", text: "Xoá vĩnh viễn" }
             ])
@@ -36,12 +36,11 @@ block main
               th STT 
               th Hình ảnh 
               th Tiêu đề 
-              th Giá 
               th Vị trí 
               th Trạng thái 
               th Hành động
           tbody 
-            each item,index in products 
+            each item,index in records 
               tr 
                 td 
                   input(
@@ -58,7 +57,6 @@ block main
                   height="auto"
                   )
                 td #{item.title}
-                td #{item.price}$
                 td 
                   input(
                     type="number" 
@@ -95,12 +93,12 @@ block main
   action=""
   method="post"
   id="form-delete-permanently-item"
-  data-path=`${prefixAdmin}/products/trash/delete-permanently`
+  data-path=`${prefixAdmin}/products-category/trash/delete-permanently`
   ) 
   form(
   action=""
   method="post"
   id="form-restore-item"
-  data-path=`${prefixAdmin}/products/trash/restore`
+  data-path=`${prefixAdmin}/products-category/trash/restore`
   ) 
-  script(src="/admin/js/product.js") 
+  script(src="/admin/js/product-category.js") 
