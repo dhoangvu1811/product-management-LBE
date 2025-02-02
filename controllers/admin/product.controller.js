@@ -24,6 +24,7 @@ module.exports.index = async (req, res) => {
         find.title = objectSearch.regex;
     }
 
+    //phân trang
     const countProducts = await Product.countDocuments(find);
     let objectPagination = paginationHelper(
         req.query,

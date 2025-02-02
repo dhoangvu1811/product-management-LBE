@@ -1,5 +1,8 @@
 const ProductCategory = require('../../model/product-category.model');
 const systemConfig = require('../../config/system');
+const filterStatusHelper = require('../../helpers/filterStatus');
+const searchHelper = require('../../helpers/search');
+const paginationHelper = require('../../helpers/pagination');
 
 // [GET] /admin/products-category
 module.exports.index = async (req, res) => {
@@ -7,11 +10,26 @@ module.exports.index = async (req, res) => {
         deleted: false,
     };
 
+    //bộ lọc theo status
+    const filterStatus = filterStatusHelper(req.query);
+
+    //tìm kiếm
+    const objectSearch = searchHelper(req.query);
+    if (objectSearch.regex) {
+        find.title = objectSearch.regex;
+    }
+
+    if (req.query.status) {
+        find.status = req.query.status;
+    }
+
     const records = await ProductCategory.find(find);
 
     res.render('admin/pages/products-category/index', {
         titlePage: 'Trang danh mục sản phẩm',
         records: records,
+        filterStatus: filterStatus,
+        keyword: objectSearch.keyword,
     });
 };
 
