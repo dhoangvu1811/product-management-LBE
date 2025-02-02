@@ -72,6 +72,15 @@ if (formChangeMulti) {
 
         const typeChange = e.target.elements.type.value;
 
+        if (inputChecked.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Vui lòng chọn ít nhất 1 bản ghi!',
+            });
+            return;
+        }
+
         if (typeChange == 'delete-all') {
             const result = await Swal.fire({
                 title: 'Bạn có chắc không?',
@@ -103,32 +112,24 @@ if (formChangeMulti) {
             }
         }
 
-        if (inputChecked.length > 0) {
-            let ids = [];
-            const inputIds = formChangeMulti.querySelector("input[name='ids']");
+        let ids = [];
+        const inputIds = formChangeMulti.querySelector("input[name='ids']");
 
-            inputChecked.forEach((input) => {
-                const id = input.value;
+        inputChecked.forEach((input) => {
+            const id = input.value;
 
-                if (typeChange == 'change-position') {
-                    const position = input
-                        .closest('tr')
-                        .querySelector("input[name='position']").value;
-                    ids.push(`${id}-${position}`);
-                } else {
-                    ids.push(id);
-                }
-            });
-            inputIds.value = ids.join(', ');
+            if (typeChange == 'change-position') {
+                const position = input
+                    .closest('tr')
+                    .querySelector("input[name='position']").value;
+                ids.push(`${id}-${position}`);
+            } else {
+                ids.push(id);
+            }
+        });
+        inputIds.value = ids.join(', ');
 
-            formChangeMulti.submit();
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Vui lòng chọn ít nhất 1 bản ghi!',
-            });
-        }
+        formChangeMulti.submit();
     });
 }
 /* End form change multi & delete all */
