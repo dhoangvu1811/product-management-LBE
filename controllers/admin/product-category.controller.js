@@ -32,13 +32,28 @@ module.exports.index = async (req, res) => {
         sort.position = 'desc';
     }
 
-    const records = await ProductCategory.find(find).sort(sort);
+    //phân trang
+    const countProducts = await ProductCategory.countDocuments(find);
+    let objectPagination = paginationHelper(
+        req.query,
+        {
+            currentPage: 1,
+            limitItems: 2,
+        },
+        countProducts
+    );
+
+    const records = await ProductCategory.find(find)
+        .sort(sort)
+        .limit(objectPagination.limitItems)
+        .skip(objectPagination.skip);
 
     res.render('admin/pages/products-category/index', {
         titlePage: 'Trang danh mục danh mục',
         records: records,
         filterStatus: filterStatus,
         keyword: objectSearch.keyword,
+        pagination: objectPagination,
     });
 };
 
