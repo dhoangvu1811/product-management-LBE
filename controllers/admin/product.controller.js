@@ -56,7 +56,7 @@ module.exports.index = async (req, res) => {
     });
 };
 
-//[PATCH] /change-status/:status/:id
+//[PATCH] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
     const id = req.params.id;
     const status = req.params.status;
@@ -67,7 +67,7 @@ module.exports.changeStatus = async (req, res) => {
     res.redirect('back');
 };
 
-//[PATCH] /change-multi/:status/:id (change position, delete all)
+//[PATCH] /admin/products/change-multi/:status/:id (change position, delete all)
 module.exports.changeMulti = async (req, res) => {
     const type = req.body.type;
     const ids = req.body.ids.split(', ');
@@ -126,7 +126,7 @@ module.exports.changeMulti = async (req, res) => {
     res.redirect('back');
 };
 
-//[DELETE] /delete/:id
+//[DELETE] /admin/products/delete/:id
 module.exports.deleteItem = async (req, res) => {
     const idItem = req.params.id;
     // await Product.deleteOne({ _id: idItem });
@@ -138,13 +138,13 @@ module.exports.deleteItem = async (req, res) => {
     res.redirect('back');
 };
 
-//[GET] /create
+//[GET] /admin/products/create
 module.exports.createItem = (req, res) => {
     res.render('admin/pages/products/create', {
         titlePage: 'Thêm mới sản phẩm',
     });
 };
-//[POST] /create
+//[POST] /admin/products/create
 module.exports.createItemPost = async (req, res) => {
     req.body.price = parseInt(req.body.price);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
@@ -168,7 +168,7 @@ module.exports.createItemPost = async (req, res) => {
     res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
 
-//[GET] /edit/:id
+//[GET] /admin/products/edit/:id
 module.exports.editItem = async (req, res) => {
     try {
         const id = req.params.id;
@@ -184,7 +184,7 @@ module.exports.editItem = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/products`);
     }
 };
-//[PATCH] /edit/:id
+//[PATCH] /admin/products/edit/:id
 module.exports.editItemPatch = async (req, res) => {
     const id = req.params.id;
     req.body.price = parseInt(req.body.price);
@@ -206,6 +206,7 @@ module.exports.editItemPatch = async (req, res) => {
     res.redirect('back');
 };
 
+//[GET] /admin/products/trash
 module.exports.trashItem = async (req, res) => {
     //bộ lọc theo status
     const filterStatus = filterStatusHelper(req.query);
@@ -240,6 +241,7 @@ module.exports.trashItem = async (req, res) => {
     });
 };
 
+//[PATCH] /admin/products/trash/restore/:id
 module.exports.trashRestoreItem = async (req, res) => {
     try {
         const id = req.params.id;
@@ -251,6 +253,7 @@ module.exports.trashRestoreItem = async (req, res) => {
     res.redirect('back');
 };
 
+//[DELETE] /admin/products/trash/delete-permanently/:id
 module.exports.trashDeletePermanentlyItem = async (req, res) => {
     try {
         const id = req.params.id;
@@ -262,7 +265,7 @@ module.exports.trashDeletePermanentlyItem = async (req, res) => {
     res.redirect('back');
 };
 
-//[GET] /edit/:id
+//[GET] /admin/products/edit/:id
 module.exports.detailItem = async (req, res) => {
     try {
         const id = req.params.id;
