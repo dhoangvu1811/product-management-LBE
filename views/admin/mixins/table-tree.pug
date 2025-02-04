@@ -1,0 +1,60 @@
+mixin table-tree(items,level=1)
+  each item,index in items 
+    - const prefix=Array(level+1).join("- ") //tạo mảng vd 3 phần tử thì chuyển thành chuỗi có 2 khoảng trống
+    tr 
+      td 
+        input(
+          type="checkbox"
+          name="id" 
+          value=item.id
+          )
+      td #{item.index}
+      td
+        img(
+        src=item.thumbnail 
+        alt=item.title 
+        width="100px" 
+        height="auto"
+        )
+      td #{prefix}#{item.title}
+      td 
+        input(
+          type="number" 
+          value=item.position 
+          style="width:60px" 
+          min="1" 
+          name="position"
+          )
+      td  
+        if(item.status=="active")
+          a(
+            href="javascript:;" 
+            data-id=item.id 
+            data-status=item.status  
+            button-changeStatus 
+            class="badge badge-success"
+            ) Hoạt động 
+        else
+          a(
+            href="javascript:;" 
+            data-id=item.id 
+            data-status=item.status   
+            button-changeStatus 
+            class="badge badge-danger"
+            ) Dừng hoạt động
+      td 
+        a(
+          class="btn btn-secondary btn-sm"
+        href=`${prefixAdmin}/products-category/detail/${item.id}`
+          ) Chi tiết
+        a(
+          class="btn btn-warning btn-sm"
+          href=`${prefixAdmin}/products-category/edit/${item.id}`
+          ) Sửa
+        button(
+          class="btn btn-danger btn-sm ml-1"
+          button-delete
+          data-id=item.id
+          ) Xoá
+    if item.children && item.children.length > 0
+        +table-tree(item.children,level+1)

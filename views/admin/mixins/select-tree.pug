@@ -1,0 +1,6 @@
+mixin select-tree(items,level=1)
+  each item in items
+    - const prefix=Array(level+1).join("- ") //tạo mảng vd 3 phần tử thì chuyển thành chuỗi có 2 khoảng trống
+    option(value=item.id) #{prefix}#{item.title}
+      if item.children && item.children.length > 0
+        +select-tree(item.children,level+1)

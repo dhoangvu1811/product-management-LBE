@@ -3,6 +3,7 @@ const systemConfig = require('../../config/system');
 const filterStatusHelper = require('../../helpers/filterStatus');
 const searchHelper = require('../../helpers/search');
 const paginationHelper = require('../../helpers/pagination');
+const createTreeHelper = require('../../helpers/createTree');
 
 // [GET] /admin/products-category
 module.exports.index = async (req, res) => {
@@ -38,7 +39,7 @@ module.exports.index = async (req, res) => {
         req.query,
         {
             currentPage: 1,
-            limitItems: 2,
+            limitItems: 5,
         },
         countProducts
     );
@@ -48,9 +49,11 @@ module.exports.index = async (req, res) => {
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip);
 
+    const newReacords = createTreeHelper.tree(records);
+
     res.render('admin/pages/products-category/index', {
         titlePage: 'Trang danh mục danh mục',
-        records: records,
+        records: newReacords,
         filterStatus: filterStatus,
         keyword: objectSearch.keyword,
         pagination: objectPagination,
@@ -59,8 +62,17 @@ module.exports.index = async (req, res) => {
 
 // [GET] /admin/products-category/create
 module.exports.create = async (req, res) => {
+    let find = {
+        deleted: false,
+    };
+
+    const records = await ProductCategory.find(find);
+
+    const newReacords = createTreeHelper.tree(records);
+
     res.render('admin/pages/products-category/create', {
         titlePage: 'Thêm danh mục danh mục',
+        records: newReacords,
     });
 };
 
