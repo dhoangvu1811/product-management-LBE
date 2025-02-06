@@ -27,5 +27,16 @@ router.delete(
     '/trash/delete-permanently/:id',
     productCategoryController.trashDeletePermanentlyItem
 );
+router.delete('/delete/:id', productCategoryController.deleteItem);
+router.get('/detail/:id', productCategoryController.detailItem);
+
+router.get('/edit/:id', productCategoryController.editItem);
+router.patch(
+    '/edit/:id',
+    upload.single('thumbnail'),
+    uploadCloud.upload,
+    validate.updatePatch,
+    productCategoryController.editItemPatch
+);
 
 module.exports = router;

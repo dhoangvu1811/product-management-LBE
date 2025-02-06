@@ -186,7 +186,7 @@ module.exports.trashItem = async (req, res) => {
         req.query,
         {
             currentPage: 1,
-            limitItems: 2,
+            limitItems: 5,
         },
         countProducts
     );
@@ -224,5 +224,88 @@ module.exports.trashDeletePermanentlyItem = async (req, res) => {
     } catch (error) {
         req.flash('error', 'Xoá danh mục thất bại');
     }
+    res.redirect('back');
+};
+
+//[DELETE] /admin/products-category/delete/:id
+module.exports.deleteItem = async (req, res) => {
+    const idItem = req.params.id;
+    await ProductCategory.updateOne(
+        { _id: idItem },
+        { deleted: true, deletedAt: new Date() }
+    );
+    req.flash('success', 'Đã xoá danh mục thành công');
+    res.redirect('back');
+};
+
+//[GET] /admin/products-category/detail/:id
+module.exports.detailItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const record = await ProductCategory.findOne({
+            _id: id,
+            deleted: false,
+        });
+
+        res.render('admin/pages/products-category/detail', {
+            titlePage: record.title,
+            record: record,
+        });
+    } catch (error) {
+        req.flash('error', 'id danh mục không tồn tại!');
+        res.redirect(`${systemConfig.prefixAdmin}/products-category`);
+    }
+};
+
+//[GET] /admin/products-category/edit/:id
+module.exports.editItem = async (req, res) => {
+    try {
+        const id = req.params.id;
+        let find = {
+            deleted: false,
+        };
+        const records = await ProductCategory.find(find);
+        const newReacords = createTreeHelper.tree(records);
+
+        const record = await ProductCategory.findOne({
+            _id: id,
+            deleted: false,
+        });
+
+        res.render('admin/pages/products-category/edit', {
+            titlePage: 'Chỉnh sửa danh mục',
+            record: record,
+            recordsCategory: newReacords,
+        });
+    } catch (error) {
+        req.flash('error', 'id danh mục không tồn tại!');
+        res.redirect(`${systemConfig.prefixAdmin}/products-category`);
+    }
+};
+//[PATCH] /admin/products-category/edit/:id
+module.exports.editItemPatch = async (req, res) => {
+    const id = req.params.id;
+    req.body.position = parseInt(req.body.position);
+
+    if (id == req.body.parent_id) {
+        req.flash('warning', 'Danh mục cha bị trùng!');
+        return res.redirect('back');
+    }
+
+    try {
+        const category = await ProductCategory.findById(id);
+        if (!category) {
+            req.flash('error', 'Danh mục không tồn tại!');
+            return res.redirect('back');
+        }
+
+        await ProductCategory.updateOne({ _id: id }, req.body);
+        req.flash('success', 'Chỉnh sửa danh mục thành công');
+    } catch (error) {
+        console.error(`Lỗi khi cập nhật danh mục ${id}:`, error);
+        req.flash('error', 'Chỉnh sửa danh mục thất bại!');
+    }
+
     res.redirect('back');
 };

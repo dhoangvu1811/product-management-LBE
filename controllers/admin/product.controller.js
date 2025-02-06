@@ -194,10 +194,6 @@ module.exports.editItemPatch = async (req, res) => {
     req.body.stock = parseInt(req.body.stock);
     req.body.position = parseInt(req.body.position);
 
-    if (req.file) {
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
-    }
-
     try {
         await Product.updateOne({ _id: id }, req.body);
         req.flash('success', 'Chỉnh sửa sản phẩm thành công');
@@ -267,7 +263,7 @@ module.exports.trashDeletePermanentlyItem = async (req, res) => {
     res.redirect('back');
 };
 
-//[GET] /admin/products/edit/:id
+//[GET] /admin/products/detail/:id
 module.exports.detailItem = async (req, res) => {
     try {
         const id = req.params.id;
