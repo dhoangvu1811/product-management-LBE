@@ -1,8 +1,10 @@
 const Product = require('../../model/product.model');
+const ProductCategory = require('../../model/product-category.model');
 const filterStatusHelper = require('../../helpers/filterStatus');
 const searchHelper = require('../../helpers/search');
 const paginationHelper = require('../../helpers/pagination');
 const systemConfig = require('../../config/system');
+const createTreeHelper = require('../../helpers/createTree');
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
@@ -141,9 +143,16 @@ module.exports.deleteItem = async (req, res) => {
 };
 
 //[GET] /admin/products/create
-module.exports.createItem = (req, res) => {
+module.exports.createItem = async (req, res) => {
+    let find = {
+        deleted: false,
+    };
+    const records = await ProductCategory.find(find);
+    const newReacords = createTreeHelper.tree(records);
+
     res.render('admin/pages/products/create', {
         titlePage: 'Thêm mới sản phẩm',
+        categorys: newReacords,
     });
 };
 //[POST] /admin/products/create
@@ -158,15 +167,10 @@ module.exports.createItemPost = async (req, res) => {
     } else {
         req.body.position = parseInt(req.body.position);
     }
-
-    // if (req.file) {
-    //     req.body.thumbnail = `/uploads/${req.file.filename}`;
-    // }
-
     const product = new Product(req.body);
     await product.save();
-
     req.flash('success', 'Tạo sản phẩm mới thành công');
+
     res.redirect(`${systemConfig.prefixAdmin}/products`);
 };
 
@@ -175,11 +179,14 @@ module.exports.editItem = async (req, res) => {
     try {
         const id = req.params.id;
 
+        const records = await ProductCategory.find({ deleted: false });
+        const newReacords = createTreeHelper.tree(records);
         const product = await Product.findOne({ _id: id, deleted: false });
 
         res.render('admin/pages/products/edit', {
             titlePage: 'Chỉnh sửa sản phẩm',
             product: product,
+            categorys: newReacords,
         });
     } catch (error) {
         req.flash('error', 'id sản phẩm không tồn tại!');
