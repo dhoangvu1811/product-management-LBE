@@ -30,3 +30,20 @@ module.exports.createPost = async (req, res) => {
 
     res.redirect(`${systemConfig.prefixAdmin}/roles`);
 };
+
+//[GET] /admin/roles/detail/:id
+module.exports.detail = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const record = await Role.findOne({ _id: id });
+
+        res.render('admin/pages/role/detail', {
+            titlePage: 'Trang chi tiết nhóm quyền',
+            record: record,
+        });
+    } catch (error) {
+        req.flash('error', 'Lỗi khi tải thông tin nhóm quyền!');
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
+};

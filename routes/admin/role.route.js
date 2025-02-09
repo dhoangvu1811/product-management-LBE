@@ -5,5 +5,6 @@ const roleController = require('../../controllers/admin/role.controller');
 router.get('/', roleController.index);
 router.get('/create', roleController.create);
 router.post('/create', roleController.createPost);
+router.get('/detail/:id', roleController.detail);
 
 module.exports = router;

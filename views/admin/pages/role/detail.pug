@@ -1,0 +1,19 @@
+extends ../../layouts/default.pug
+
+
+block main 
+
+  h1(class="mb-4") Trang chi tiết nhóm quyền
+  if(record.title)
+    div(class="mb-4") Nhóm quyền: #{record.title}
+
+  if(record.description)
+    div(class="mb-4") Mô tả ngắn: !{record.description}
+
+  a(
+    class="btn btn-warning"
+    href=`${prefixAdmin}/roles/edit/${record.id}`
+  ) Chỉnh sửa nhóm quyền
+
+
+  //- script(src="/admin/js/record.js") 

@@ -1,6 +1,10 @@
 extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
 
 block main
+  +alert()
+
   h1(class="mb-4") Trang nhóm quyền
 
   .card.mb-3
