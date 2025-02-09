@@ -1,0 +1,38 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+
+block main 
+  h1(class="mb-4") Chỉnh sửa nhóm quyền
+  +alert()
+  form(
+    action=`${prefixAdmin}/roles/edit/${record._id}?_method=PATCH` 
+    id="form-edit-role" 
+    method="post"
+  )
+    div(class="form-group")
+      label(for="title") Tiêu đề
+      input(
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        value=record.title
+        
+      )
+    div(class="form-group")
+      label(for="desc") Mô tả
+      textarea(
+        type="text"
+        class="form-control"
+        id="desc"
+        name="description"
+        rows="5"
+        value=record.description
+      ) #{record.description}
+    div(class="form-group")
+      button(
+        type="submit"
+        class="btn btn-primary"
+      ) Cập nhật
+       
+  //- script(src="/admin/js/product.js") 

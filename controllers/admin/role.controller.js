@@ -47,3 +47,35 @@ module.exports.detail = async (req, res) => {
         res.redirect(`${systemConfig.prefixAdmin}/roles`);
     }
 };
+
+//[GET] /admin/roles/edit/:id
+module.exports.edit = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const record = await Role.findOne({ _id: id });
+
+        res.render('admin/pages/role/edit', {
+            titlePage: 'Trang chỉnh sửa nhóm quyền',
+            record: record,
+        });
+    } catch (error) {
+        req.flash('error', 'Lỗi khi tải thông tin nhóm quyền!');
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
+};
+
+//[PATCH] /admin/roles/edit/:id
+module.exports.editpatch = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const record = await Role.updateOne({ _id: id }, req.body);
+
+        req.flash('success', 'Chỉnh sửa nhóm quyền thành công');
+        res.redirect('back');
+    } catch (error) {
+        req.flash('error', 'Chỉnh sửa nhóm quyền thất bại!');
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
+};
