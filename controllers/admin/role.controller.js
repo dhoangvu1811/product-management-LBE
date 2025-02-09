@@ -53,7 +53,7 @@ module.exports.edit = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const record = await Role.findOne({ _id: id });
+        const record = await Role.findOne({ _id: id, deleted: false });
 
         res.render('admin/pages/role/edit', {
             titlePage: 'Trang chỉnh sửa nhóm quyền',
@@ -76,6 +76,21 @@ module.exports.editpatch = async (req, res) => {
         res.redirect('back');
     } catch (error) {
         req.flash('error', 'Chỉnh sửa nhóm quyền thất bại!');
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    }
+};
+
+//[DELETE] /admin/roles/delete/:id
+module.exports.delete = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const record = await Role.updateOne({ _id: id }, { deleted: true });
+
+        req.flash('success', 'Xoá nhóm quyền thành công');
+        res.redirect(`${systemConfig.prefixAdmin}/roles`);
+    } catch (error) {
+        req.flash('error', 'Xoá nhóm quyền thất bại!');
         res.redirect(`${systemConfig.prefixAdmin}/roles`);
     }
 };
