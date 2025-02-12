@@ -9,5 +9,7 @@ router.get('/detail/:id', roleController.detail);
 router.get('/edit/:id', roleController.edit);
 router.patch('/edit/:id', roleController.editpatch);
 router.delete('/delete/:id', roleController.delete);
+router.get('/permission', roleController.permission);
+router.patch('/permission', roleController.permissionPatch);
 
 module.exports = router;
