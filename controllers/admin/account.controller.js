@@ -64,3 +64,53 @@ module.exports.createPost = async (req, res) => {
         return res.redirect(`${systemConfig.prefixAdmin}/accounts`);
     }
 };
+
+//[GET] /admin/accounts/edit
+module.exports.edit = async (req, res) => {
+    const id = req.params.id;
+    let record = [];
+    let roles = [];
+    try {
+        record = await Account.findOne({ _id: id, deleted: false });
+        roles = await Role.find({ deleted: false });
+    } catch (error) {
+        console.error('Lỗi khi lấy thông tin:', error);
+        req.flash('error', 'Lỗi trong quá trình lấy thông tin');
+    }
+
+    res.render('admin/pages/accounts/edit', {
+        titlePage: 'Chỉnh sửa tài khoản',
+        record: record,
+        roles: roles,
+    });
+};
+
+//[PATCH] /admin/accounts/edit/:id
+module.exports.editPatch = async (req, res) => {
+    const id = req.params.id;
+    const emailExist = await Account.findOne({
+        _id: { $ne: id }, //$ne (Not Equal) có nghĩa là không lấy tài khoản có _id là id hiện tại.
+        email: req.body.email,
+        deleted: false,
+    });
+    if (emailExist) {
+        req.flash('error', 'Email tài khoản trùng lặp!');
+        return res.redirect(`back`);
+    }
+
+    if (req.body.password) {
+        req.body.password = md5(req.body.password);
+    } else {
+        delete req.body.password;
+    }
+
+    try {
+        await Account.updateOne({ _id: id }, req.body);
+        req.flash('success', 'Chỉnh sửa tài khoản thành công');
+    } catch (error) {
+        console.error('Lỗi khi chỉnh sửa tài khoản:', error);
+        req.flash('error', 'Chỉnh sửa tài khoản thất bại!');
+    }
+
+    res.redirect('back');
+};
