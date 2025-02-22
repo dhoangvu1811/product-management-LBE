@@ -25,11 +25,11 @@ block main
   if(record.description)
     div(class="mb-4") !{record.description}
 
-
-  a(
-    class="btn btn-warning"
-    href=`${prefixAdmin}/products-category/edit/${record.id}`
-  ) Chỉnh sửa danh mục
+  if(role.permissions.includes("products-category_edit"))
+    a(
+      class="btn btn-warning"
+      href=`${prefixAdmin}/products-category/edit/${record.id}`
+    ) Chỉnh sửa danh mục
 
 
   script(src="/admin/js/product-category.js") 
