@@ -5,17 +5,31 @@ const roles = require('./role.route');
 const accounts = require('./account.route');
 const auth = require('./auth.route');
 const { prefixAdmin } = require('../../config/system');
+const authMiddleware = require('../../middlewares/admin/auth.middleware');
+
 module.exports = (app) => {
     const PATH_ADMIN = prefixAdmin;
-    app.use(PATH_ADMIN + '/dashboard', dashboardRoutes);
+    app.use(
+        PATH_ADMIN + '/dashboard',
+        authMiddleware.requireAuth,
+        dashboardRoutes
+    );
 
-    app.use(PATH_ADMIN + '/products', productRoutes);
+    app.use(
+        PATH_ADMIN + '/products',
+        authMiddleware.requireAuth,
+        productRoutes
+    );
 
-    app.use(PATH_ADMIN + '/products-category', productCategory);
+    app.use(
+        PATH_ADMIN + '/products-category',
+        authMiddleware.requireAuth,
+        productCategory
+    );
 
-    app.use(PATH_ADMIN + '/roles', roles);
+    app.use(PATH_ADMIN + '/roles', authMiddleware.requireAuth, roles);
 
-    app.use(PATH_ADMIN + '/accounts', accounts);
+    app.use(PATH_ADMIN + '/accounts', authMiddleware.requireAuth, accounts);
 
     app.use(PATH_ADMIN + '/auth', auth);
 };
