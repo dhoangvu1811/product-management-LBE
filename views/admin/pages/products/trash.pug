@@ -5,102 +5,105 @@ include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 
 block main
-  h1 Thùng rác sản phẩm
-  +alert()
-       
-  .card.mb-3
-    .card-header Bộ lọc và tìm kiếm sản phẩm
-    .card-body
-      .row
-        .col-6
-          +filter-status(filterStatus)
+  if(role.permissions.includes("products_delete"))
+    h1 Thùng rác sản phẩm
+    +alert()
+        
+    .card.mb-3
+      .card-header Bộ lọc và tìm kiếm sản phẩm
+      .card-body
+        .row
+          .col-6
+            +filter-status(filterStatus)
 
-  .card.mb-3
-    .card-header Thùng rác sản phẩm
-      .card-body 
-        .row 
-          .col-8
-            +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`,[
-              { value: "restore", text: "Khôi phục" },
-              { value: "delete-permanently", text: "Xoá vĩnh viễn" }
-            ])
+    .card.mb-3
+      .card-header Thùng rác sản phẩm
+        .card-body 
+          .row 
+            .col-8
+              +form-change-multi(`${prefixAdmin}/products/change-multi?_method=PATCH`,[
+                { value: "restore", text: "Khôi phục" },
+                { value: "delete-permanently", text: "Xoá vĩnh viễn" }
+              ])
 
-        table(
-          class="table table-hover table-sm"
-          table-checkbox-multi
-          )
-          thead 
-            tr 
-              th  
-                input(type="checkbox", name="checkAll")
-              th STT 
-              th Hình ảnh 
-              th Tiêu đề 
-              th Giá 
-              th Vị trí 
-              th Trạng thái 
-              th Hành động
-          tbody 
-            each item,index in products 
+          table(
+            class="table table-hover table-sm"
+            table-checkbox-multi
+            )
+            thead 
               tr 
-                td 
-                  input(
-                    type="checkbox"
-                    name="id" 
-                    value=item.id
+                th  
+                  input(type="checkbox", name="checkAll")
+                th STT 
+                th Hình ảnh 
+                th Tiêu đề 
+                th Giá 
+                th Vị trí 
+                th Trạng thái 
+                th Hành động
+            tbody 
+              each item,index in products 
+                tr 
+                  td 
+                    input(
+                      type="checkbox"
+                      name="id" 
+                      value=item.id
+                      )
+                  td #{index+1}
+                  td
+                    img(
+                    src=item.thumbnail 
+                    alt=item.title 
+                    width="100px" 
+                    height="auto"
                     )
-                td #{index+1}
-                td
-                  img(
-                  src=item.thumbnail 
-                  alt=item.title 
-                  width="100px" 
-                  height="auto"
-                  )
-                td #{item.title}
-                td #{item.price}$
-                td 
-                  input(
-                    type="number" 
-                    value=item.position 
-                    style="width:60px" 
-                    min="1" 
-                    name="position"
-                    readonly
-                    )
-                td  
-                  if(item.status=="active")
-                    span(
-                      class="badge badge-success"
-                      ) Hoạt động 
-                  else
-                    span(
-                      class="badge badge-danger"
-                      ) Dừng hoạt động
-                td 
-                  button(
-                    class="btn btn-warning btn-sm"
-                    button-restore
-                    data-id=item.id
-                    ) Khôi phục
-                  button(
-                    class="btn btn-danger btn-sm ml-1"
-                    button-delete-permanently
-                    data-id=item.id
-                    ) Xoá vĩnh viễn
+                  td #{item.title}
+                  td #{item.price}$
+                  td 
+                    input(
+                      type="number" 
+                      value=item.position 
+                      style="width:60px" 
+                      min="1" 
+                      name="position"
+                      readonly
+                      )
+                  td  
+                    if(item.status=="active")
+                      span(
+                        class="badge badge-success"
+                        ) Hoạt động 
+                    else
+                      span(
+                        class="badge badge-danger"
+                        ) Dừng hoạt động
+                  td 
+                    button(
+                      class="btn btn-warning btn-sm"
+                      button-restore
+                      data-id=item.id
+                      ) Khôi phục
+                    button(
+                      class="btn btn-danger btn-sm ml-1"
+                      button-delete-permanently
+                      data-id=item.id
+                      ) Xoá vĩnh viễn
 
-  +pagination(pagination) 
+    +pagination(pagination) 
 
-  form(
-  action=""
-  method="post"
-  id="form-delete-permanently-item"
-  data-path=`${prefixAdmin}/products/trash/delete-permanently`
-  ) 
-  form(
-  action=""
-  method="post"
-  id="form-restore-item"
-  data-path=`${prefixAdmin}/products/trash/restore`
-  ) 
-  script(src="/admin/js/product.js") 
+    form(
+    action=""
+    method="post"
+    id="form-delete-permanently-item"
+    data-path=`${prefixAdmin}/products/trash/delete-permanently`
+    ) 
+    form(
+    action=""
+    method="post"
+    id="form-restore-item"
+    data-path=`${prefixAdmin}/products/trash/restore`
+    ) 
+    script(src="/admin/js/product.js") 
+  else 
+    h1 Bạn không có quyền truy cập!
