@@ -70,6 +70,7 @@ block main
                 th Giá 
                 th Vị trí 
                 th Trạng thái 
+                th Người tạo
                 th Hành động
             tbody 
               each item,index in products 
@@ -131,6 +132,10 @@ block main
                           data-status=item.status   
                           class="badge badge-danger"
                           ) Dừng hoạt động
+                  td 
+                    p #{item.accountFullName}
+                    if(item.createdBy.createdAt)
+                      p #{moment(item.createdBy.createdAt).format("DD/MM/YYYY HH:mm:ss")}
                   td 
                     a(
                       class="btn btn-secondary btn-sm"

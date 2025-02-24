@@ -40,6 +40,7 @@ block main
                 th Giá 
                 th Vị trí 
                 th Trạng thái 
+                th Người xoá
                 th Hành động
             tbody 
               each item,index in products 
@@ -78,6 +79,9 @@ block main
                       span(
                         class="badge badge-danger"
                         ) Dừng hoạt động
+                  td 
+                    p #{item.accountFullName}
+                    p #{moment(item.deletedBy.deletedAt).format("DD/MM/YYYY HH:mm:ss")}
                   td 
                     button(
                       class="btn btn-warning btn-sm"

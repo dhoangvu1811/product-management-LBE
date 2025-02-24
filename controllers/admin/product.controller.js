@@ -1,4 +1,5 @@
 const Product = require('../../model/product.model');
+const Account = require('../../model/account.model');
 const ProductCategory = require('../../model/product-category.model');
 const filterStatusHelper = require('../../helpers/filterStatus');
 const searchHelper = require('../../helpers/search');
@@ -51,6 +52,15 @@ module.exports.index = async (req, res) => {
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip);
 
+    for (const product of products) {
+        const account = await Account.findOne({
+            _id: product.createdBy.account_id,
+        });
+        if (account) {
+            product.accountFullName = account.fullName;
+        }
+    }
+
     res.render('admin/pages/products/index', {
         titlePage: 'Trang sản phẩm',
         products: products,
@@ -100,7 +110,14 @@ module.exports.changeMulti = async (req, res) => {
         case 'delete-all':
             await Product.updateMany(
                 { _id: { $in: ids } },
-                { deleted: true, deletedAt: new Date() }
+                {
+                    deleted: true,
+                    deletedBy: {
+                        account_id: res.locals.user.id,
+                        deletedAt: new Date(),
+                    },
+                    $unset: { restoredBy: '' },
+                }
             );
             req.flash('success', `Xoá ${ids.length} sản phẩm thành công`);
             break;
@@ -116,7 +133,17 @@ module.exports.changeMulti = async (req, res) => {
             );
             break;
         case 'restore':
-            await Product.updateMany({ _id: { $in: ids } }, { deleted: false });
+            await Product.updateMany(
+                { _id: { $in: ids } },
+                {
+                    deleted: false,
+                    restoredBy: {
+                        account_id: res.locals.user.id,
+                        restoredAt: new Date(),
+                    },
+                    $unset: { deletedBy: '' },
+                }
+            );
             req.flash('success', `Khôi phục ${ids.length} sản phẩm thành công`);
             break;
         case 'delete-permanently':
@@ -136,7 +163,14 @@ module.exports.deleteItem = async (req, res) => {
     // await Product.deleteOne({ _id: idItem });
     await Product.updateOne(
         { _id: idItem },
-        { deleted: true, deletedAt: new Date() }
+        {
+            deleted: true,
+            deletedBy: {
+                account_id: res.locals.user.id,
+                deletedAt: new Date(),
+            },
+            $unset: { restoredBy: '' }, // Xoá trường restoredBy
+        }
     );
     req.flash('success', 'Đã xoá sản phẩm thành công');
     res.redirect('back');
@@ -167,6 +201,10 @@ module.exports.createItemPost = async (req, res) => {
     } else {
         req.body.position = parseInt(req.body.position);
     }
+    req.body.createdBy = {
+        account_id: res.locals.user.id,
+        createdAt: new Date(),
+    };
     const product = new Product(req.body);
     await product.save();
     req.flash('success', 'Tạo sản phẩm mới thành công');
@@ -238,6 +276,15 @@ module.exports.trashItem = async (req, res) => {
         .sort({ position: 'desc' })
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip);
+
+    for (const product of products) {
+        const account = await Account.findOne({
+            _id: product.deletedBy.account_id,
+        });
+        if (account) {
+            product.accountFullName = account.fullName;
+        }
+    }
     res.render('admin/pages/products/trash', {
         titlePage: 'Thùng rác',
         products: products,
@@ -250,7 +297,17 @@ module.exports.trashItem = async (req, res) => {
 module.exports.trashRestoreItem = async (req, res) => {
     try {
         const id = req.params.id;
-        await Product.updateOne({ _id: id }, { deleted: false });
+        await Product.updateOne(
+            { _id: id },
+            {
+                deleted: false,
+                restoredBy: {
+                    account_id: res.locals.user.id,
+                    restoredAt: new Date(),
+                },
+                $unset: { deletedBy: '' },
+            }
+        );
         req.flash('success', 'Khôi phục sản phẩm thành công');
     } catch (error) {
         req.flash('error', 'Khôi phục sản phẩm thất bại');
